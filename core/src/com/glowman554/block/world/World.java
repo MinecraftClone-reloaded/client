@@ -56,7 +56,7 @@ public class World implements Disposable {
                     if(this.world[chunkX + i][chunkY + k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX + i, chunkY + k);
-                            this.world[chunkX + i][chunkY + k] = new Chunk(false, chunkX + i, chunkY + i);
+                            this.world[chunkX + i][chunkY + k] = new Chunk(false, chunkX + i, chunkY + k);
                             this.world[chunkX + i][chunkY + k].load(chunk);
                             this.world[chunkX + i][chunkY + k].updatePosition();
                         } else {
@@ -72,7 +72,7 @@ public class World implements Disposable {
                     if(this.world[chunkX - i][chunkY - k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX - i, chunkY - k);
-                            this.world[chunkX - i][chunkY - k] = new Chunk(false, chunkX - i, chunkY - i);
+                            this.world[chunkX - i][chunkY - k] = new Chunk(false, chunkX - i, chunkY - k);
                             this.world[chunkX - i][chunkY - k].load(chunk);
                             this.world[chunkX - i][chunkY - k].updatePosition();
                         } else {
@@ -88,7 +88,7 @@ public class World implements Disposable {
                     if(this.world[chunkX + i][chunkY - k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX + i, chunkY - k);
-                            this.world[chunkX + i][chunkY - k] = new Chunk(false, chunkX + i, chunkY - i);
+                            this.world[chunkX + i][chunkY - k] = new Chunk(false, chunkX + i, chunkY - k);
                             this.world[chunkX + i][chunkY - k].load(chunk);
                             this.world[chunkX + i][chunkY - k].updatePosition();
                         } else {
@@ -104,7 +104,7 @@ public class World implements Disposable {
                     if(this.world[chunkX - i][chunkY + k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX - i, chunkY + k);
-                            this.world[chunkX - i][chunkY + k] = new Chunk(false, chunkX - i, chunkY + i);
+                            this.world[chunkX - i][chunkY + k] = new Chunk(false, chunkX - i, chunkY + k);
                             this.world[chunkX - i][chunkY + k].load(chunk);
                             this.world[chunkX - i][chunkY + k].updatePosition();
                         } else {

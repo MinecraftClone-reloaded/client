@@ -88,6 +88,8 @@ public class BlockGame extends ApplicationAdapter {
 		camera_controller.setVelocity(camera_velocity);
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
+
+		this.connectToServer("localhost", 90);
 	}
 
 	@Override
@@ -118,8 +120,6 @@ public class BlockGame extends ApplicationAdapter {
 		sprite_batch.end();
 
 		//System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
-
-		this.connectToServer("localhost", 90);
 	}
 
 	public void connectToServer(String host, int port) {
@@ -137,6 +137,12 @@ public class BlockGame extends ApplicationAdapter {
 					if (tmp.contains("SetBlock")) {
 						String[] t = tmp.split(" ");
 						world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
+					}
+
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}
