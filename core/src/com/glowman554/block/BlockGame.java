@@ -66,9 +66,9 @@ public class BlockGame extends ApplicationAdapter {
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				if(button == 0) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, Block.Type.DirtBlock);
+					world.editBoxByRayCast(camera, camera.position, camera.direction, Block.Type.DirtBlock, online, serverConnection);
 				} else if(button == 1) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, null);
+					world.editBoxByRayCast(camera, camera.position, camera.direction, null, online, serverConnection);
 				}
 				return super.touchDown(screenX, screenY, pointer, button);
 			}
@@ -99,7 +99,7 @@ public class BlockGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		model_batch.begin(camera);
-		world.renderWorld(model_batch, environment, camera);
+		world.renderWorld(model_batch, environment, camera, online, serverConnection);
 		model_batch.end();
 
 		float corsair_x = (Gdx.graphics.getWidth() - corsair_size) / 2;

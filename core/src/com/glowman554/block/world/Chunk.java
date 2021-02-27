@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.*;
+import com.glowman554.block.multiplayer.ServerConnection;
 
 import java.util.Random;
 
@@ -66,7 +67,7 @@ public class Chunk implements Disposable {
         }
     }
 
-    public void renderChunk(ModelBatch batch, Environment environment) {
+    public void renderChunk(ModelBatch batch, Environment environment, boolean online, ServerConnection serverConnection) {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
                 for (int k = 0; k < chunk_size; k++) {
@@ -78,7 +79,7 @@ public class Chunk implements Disposable {
         }
     }
 
-    public void editBoxByRayCast(Vector3 start_point, Vector3 direction, Block.Type type) {
+    public void editBoxByRayCast(Vector3 start_point, Vector3 direction, Block.Type type, boolean online, ServerConnection serverConnection) {
         int last_point_x = 0;
         int last_point_y = 0;
         int last_point_z = 0;

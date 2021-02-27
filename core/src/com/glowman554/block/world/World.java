@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.Block;
+import com.glowman554.block.multiplayer.ServerConnection;
 
 public class World implements Disposable {
     private final static int world_size = 128;
@@ -44,7 +45,7 @@ public class World implements Disposable {
         }
     }
 
-    public void renderWorld(ModelBatch batch, Environment environment, Camera camera) {
+    public void renderWorld(ModelBatch batch, Environment environment, Camera camera, boolean online, ServerConnection serverConnection) {
 
         int chunkX = (int) (camera.position.x / Chunk.chunk_size / Chunk.field_size);
         int chunkY = (int) (camera.position.z / Chunk.chunk_size / Chunk.field_size);
@@ -55,7 +56,7 @@ public class World implements Disposable {
                     if(this.world[chunkX + i][chunkY + k] == null) {
                         this.world[chunkX + i][chunkY + k] = new Chunk(true, chunkX + i, chunkY + k);
                     }
-                    this.world[chunkX + i][chunkY + k].renderChunk(batch, environment);
+                    this.world[chunkX + i][chunkY + k].renderChunk(batch, environment, online, serverConnection);
                 } catch (Exception e) {
 
                 }
@@ -64,7 +65,7 @@ public class World implements Disposable {
                     if(this.world[chunkX - i][chunkY - k] == null) {
                         this.world[chunkX - i][chunkY - k] = new Chunk(true, chunkX - i, chunkY - k);
                     }
-                    this.world[chunkX - i][chunkY - k].renderChunk(batch, environment);
+                    this.world[chunkX - i][chunkY - k].renderChunk(batch, environment, online, serverConnection);
                 } catch (Exception e) {
 
                 }
@@ -73,7 +74,7 @@ public class World implements Disposable {
                     if(this.world[chunkX + i][chunkY - k] == null) {
                         this.world[chunkX + i][chunkY - k] = new Chunk(true, chunkX + i, chunkY - k);
                     }
-                    this.world[chunkX + i][chunkY - k].renderChunk(batch, environment);
+                    this.world[chunkX + i][chunkY - k].renderChunk(batch, environment, online, serverConnection);
                 } catch (Exception e) {
 
                 }
@@ -82,7 +83,7 @@ public class World implements Disposable {
                     if(this.world[chunkX - i][chunkY + k] == null) {
                         this.world[chunkX - i][chunkY + k] = new Chunk(true, chunkX - i, chunkY + k);
                     }
-                    this.world[chunkX - i][chunkY + k].renderChunk(batch, environment);
+                    this.world[chunkX - i][chunkY + k].renderChunk(batch, environment, online, serverConnection);
                 } catch (Exception e) {
 
                 }
@@ -90,7 +91,7 @@ public class World implements Disposable {
         }
     }
 
-    public void editBoxByRayCast(Camera camera, Vector3 start_point, Vector3 direction, Block.Type type) {
+    public void editBoxByRayCast(Camera camera, Vector3 start_point, Vector3 direction, Block.Type type, boolean online, ServerConnection serverConnection) {
         int chunkX = (int) (camera.position.x / Chunk.chunk_size / Chunk.field_size);
         int chunkY = (int) (camera.position.z / Chunk.chunk_size / Chunk.field_size);
 
@@ -101,7 +102,7 @@ public class World implements Disposable {
         new_point.z = start_point.z - (Chunk.field_size * Chunk.chunk_size) * chunkY;
 
         try {
-            this.world[chunkX][chunkY].editBoxByRayCast(new_point, direction, type);
+            this.world[chunkX][chunkY].editBoxByRayCast(new_point, direction, type, online, serverConnection);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
