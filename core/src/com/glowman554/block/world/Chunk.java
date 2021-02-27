@@ -67,7 +67,7 @@ public class Chunk implements Disposable {
         }
     }
 
-    public void renderChunk(ModelBatch batch, Environment environment, boolean online, ServerConnection serverConnection) {
+    public void renderChunk(ModelBatch batch, Environment environment) {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
                 for (int k = 0; k < chunk_size; k++) {
@@ -111,6 +111,9 @@ public class Chunk implements Disposable {
                     switch(type) {
                         case DirtBlock:
                             this.field[last_point_x][last_point_y][last_point_z] = new DirtBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
                             this.updatePosition();
                     }
                 }
@@ -253,6 +256,15 @@ public class Chunk implements Disposable {
                             case LeavesBlock:
                                 field[i][j][k] = new LeavesBlock();
                                 break;
+                            case StoneBlock:
+                                field[i][j][k] = new StoneBlock();
+                                break;
+                            case GlassBlock:
+                                field[i][j][k] = new GlassBlock();
+                                break;
+                            case TestBlock:
+                                field[i][j][k] = new TestBlock();
+                                break;
                         }
                     }
                     readsofar++;
@@ -274,6 +286,36 @@ public class Chunk implements Disposable {
                     }
                 }
             }
+        }
+    }
+
+    public void setBlock(String block, int x, int y, int z) {
+        switch (Enum.valueOf(Block.Type.class, block)) {
+            case LeavesBlock:
+                field[x][y][z] = new LeavesBlock();
+                break;
+            case GrassBlock:
+                field[x][y][z] = new GrassBlock();
+                break;
+            case BerryBlock:
+                field[x][y][z] = new BerryBlock();
+                break;
+            case WoodBlock:
+                field[x][y][z] = new WoodBlock();
+                break;
+            case DirtBlock:
+                field[x][y][z] = new DirtBlock();
+                break;
+            case TestBlock:
+                field[x][y][z] = new TestBlock();
+                break;
+            case GlassBlock:
+                field[x][y][z] = new GlassBlock();
+                break;
+            case StoneBlock:
+                field[x][y][z] = new StoneBlock();
+                break;
+
         }
     }
 }

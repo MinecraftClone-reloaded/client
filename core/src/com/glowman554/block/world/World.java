@@ -54,36 +54,64 @@ public class World implements Disposable {
             for (int k = 0; k < render_distance; k++) {
                 try {
                     if(this.world[chunkX + i][chunkY + k] == null) {
-                        this.world[chunkX + i][chunkY + k] = new Chunk(true, chunkX + i, chunkY + k);
+                        if (online) {
+                            String chunk = serverConnection.getChunk(chunkX + i, chunkY + k);
+                            this.world[chunkX + i][chunkY + k] = new Chunk(false, chunkX + i, chunkY + i);
+                            this.world[chunkX + i][chunkY + k].load(chunk);
+                            this.world[chunkX + i][chunkY + k].updatePosition();
+                        } else {
+                            this.world[chunkX + i][chunkY + k] = new Chunk(true, chunkX + i, chunkY + k);
+                        }
                     }
-                    this.world[chunkX + i][chunkY + k].renderChunk(batch, environment, online, serverConnection);
+                    this.world[chunkX + i][chunkY + k].renderChunk(batch, environment);
                 } catch (Exception e) {
 
                 }
 
                 try {
                     if(this.world[chunkX - i][chunkY - k] == null) {
-                        this.world[chunkX - i][chunkY - k] = new Chunk(true, chunkX - i, chunkY - k);
+                        if (online) {
+                            String chunk = serverConnection.getChunk(chunkX - i, chunkY - k);
+                            this.world[chunkX - i][chunkY - k] = new Chunk(false, chunkX - i, chunkY - i);
+                            this.world[chunkX - i][chunkY - k].load(chunk);
+                            this.world[chunkX - i][chunkY - k].updatePosition();
+                        } else {
+                            this.world[chunkX - i][chunkY - k] = new Chunk(true, chunkX - i, chunkY - k);
+                        }
                     }
-                    this.world[chunkX - i][chunkY - k].renderChunk(batch, environment, online, serverConnection);
+                    this.world[chunkX - i][chunkY - k].renderChunk(batch, environment);
                 } catch (Exception e) {
 
                 }
 
                 try {
                     if(this.world[chunkX + i][chunkY - k] == null) {
-                        this.world[chunkX + i][chunkY - k] = new Chunk(true, chunkX + i, chunkY - k);
+                        if (online) {
+                            String chunk = serverConnection.getChunk(chunkX + i, chunkY - k);
+                            this.world[chunkX + i][chunkY - k] = new Chunk(false, chunkX + i, chunkY - i);
+                            this.world[chunkX + i][chunkY - k].load(chunk);
+                            this.world[chunkX + i][chunkY - k].updatePosition();
+                        } else {
+                            this.world[chunkX + i][chunkY - k] = new Chunk(true, chunkX + i, chunkY - k);
+                        }
                     }
-                    this.world[chunkX + i][chunkY - k].renderChunk(batch, environment, online, serverConnection);
+                    this.world[chunkX + i][chunkY - k].renderChunk(batch, environment);
                 } catch (Exception e) {
 
                 }
 
                 try {
                     if(this.world[chunkX - i][chunkY + k] == null) {
-                        this.world[chunkX - i][chunkY + k] = new Chunk(true, chunkX - i, chunkY + k);
+                        if (online) {
+                            String chunk = serverConnection.getChunk(chunkX - i, chunkY + k);
+                            this.world[chunkX - i][chunkY + k] = new Chunk(false, chunkX - i, chunkY + i);
+                            this.world[chunkX - i][chunkY + k].load(chunk);
+                            this.world[chunkX - i][chunkY + k].updatePosition();
+                        } else {
+                            this.world[chunkX - i][chunkY + k] = new Chunk(true, chunkX - i, chunkY + k);
+                        }
                     }
-                    this.world[chunkX - i][chunkY + k].renderChunk(batch, environment, online, serverConnection);
+                    this.world[chunkX - i][chunkY + k].renderChunk(batch, environment);
                 } catch (Exception e) {
 
                 }
@@ -173,5 +201,11 @@ public class World implements Disposable {
     }
 
     public void setBlock(String block, int x, int y, int z) {
+        int chunkX = (int) (x / Chunk.chunk_size);
+        int chunkY = (int) (z / Chunk.chunk_size);
+
+        if(world[chunkX][chunkY] != null) {
+            world[chunkX][chunkY].setBlock(block, x, y, z);
+        }
     }
 }

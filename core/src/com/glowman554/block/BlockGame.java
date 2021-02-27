@@ -22,6 +22,13 @@ import java.io.IOException;
 
 public class BlockGame extends ApplicationAdapter {
 
+
+	//TODO add discord rpc
+	//TODO ability to switch blocks
+	//TODO local world saving
+	//TODO username
+	//TODO command line interface
+
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
 	public final float camera_far = 300;
@@ -111,6 +118,8 @@ public class BlockGame extends ApplicationAdapter {
 		sprite_batch.end();
 
 		//System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
+
+		this.connectToServer("localhost", 90);
 	}
 
 	public void connectToServer(String host, int port) {
