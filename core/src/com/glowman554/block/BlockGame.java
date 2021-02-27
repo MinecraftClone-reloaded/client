@@ -26,7 +26,6 @@ public class BlockGame extends ApplicationAdapter {
 
 	//TODO add discord rpc
 	//TODO sound
-	//TODO render selected block
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
@@ -43,6 +42,8 @@ public class BlockGame extends ApplicationAdapter {
 	public PerspectiveCamera camera;
 	public BitmapFont font;
 	public Texture corsair;
+
+	public Block.Type currentBlock = Block.Type.DirtBlock;
 
 	public boolean online = false;
 	private final String username;
@@ -81,11 +82,9 @@ public class BlockGame extends ApplicationAdapter {
 		camera.update();
 
 		font = new BitmapFont(Gdx.files.internal("font/Calibri.fnt"), false);
-		corsair = new Texture(Gdx.files.internal("interface/Crosshair.png"));
+		corsair = new Texture(Gdx.files.internal("interface/corsair.png"));
 
 		camera_controller = new FPSController(camera) {
-
-			public Block.Type currentBlock = Block.Type.DirtBlock;
 
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -196,6 +195,9 @@ public class BlockGame extends ApplicationAdapter {
 		sprite_batch.begin();
 		if(debug_overlay) {
 			world.renderDebug(font, sprite_batch, camera);
+			font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight() - 5 * 30);
+		} else {
+			font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
 		}
 		sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 		sprite_batch.end();
