@@ -2,6 +2,7 @@ package com.glowman554.block;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,10 +25,9 @@ public class BlockGame extends ApplicationAdapter {
 
 
 	//TODO add discord rpc
-	//TODO ability to switch blocks
-	//TODO local world saving
 	//TODO username
 	//TODO command line interface
+	//TODO sound
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
@@ -47,6 +47,8 @@ public class BlockGame extends ApplicationAdapter {
 	public boolean online = false;
 
 	public ServerConnection serverConnection;
+
+	public String event = "";
 
 	public World world;
 
@@ -70,14 +72,66 @@ public class BlockGame extends ApplicationAdapter {
 		corsair = new Texture(Gdx.files.internal("interface/Crosshair.png"));
 
 		camera_controller = new FPSController(camera) {
+
+			public Block.Type currentBlock = Block.Type.DirtBlock;
+
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				if(button == 0) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, Block.Type.DirtBlock, online, serverConnection);
+					world.editBoxByRayCast(camera, camera.position, camera.direction, currentBlock, online, serverConnection);
 				} else if(button == 1) {
 					world.editBoxByRayCast(camera, camera.position, camera.direction, null, online, serverConnection);
 				}
 				return super.touchDown(screenX, screenY, pointer, button);
+			}
+
+			@Override
+			public boolean keyDown(int keycode) {
+
+				switch (keycode) {
+					case Input.Keys.F1:
+						try {
+							FileUtils.writeFile(world.save(), "world.msave");
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						break;
+					case Input.Keys.F2:
+						try {
+							world.load(FileUtils.readFile("world.msave"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						break;
+
+					case Input.Keys.NUM_0:
+						currentBlock = Block.Type.BerryBlock;
+						break;
+					case Input.Keys.NUM_1:
+						currentBlock = Block.Type.DirtBlock;
+						break;
+					case Input.Keys.NUM_2:
+						currentBlock = Block.Type.GlassBlock;
+						break;
+					case Input.Keys.NUM_3:
+						currentBlock = Block.Type.GrassBlock;
+						break;
+					case Input.Keys.NUM_4:
+						currentBlock = Block.Type.LeavesBlock;
+						break;
+					case Input.Keys.NUM_5:
+						currentBlock = Block.Type.StoneBlock;
+						break;
+					case Input.Keys.NUM_6:
+						currentBlock = Block.Type.TestBlock;
+						break;
+					case Input.Keys.NUM_7:
+						currentBlock = Block.Type.WoodBlock;
+						break;
+
+				}
+
+				return super.keyDown(keycode);
 			}
 		};
 
@@ -89,11 +143,21 @@ public class BlockGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
 
-		this.connectToServer("localhost", 90);
+		//connectToServer("localhost",90);
 	}
 
 	@Override
 	public void render () {
+
+		if(online) {
+			System.out.println(event);
+			if (event.contains("sb")) {
+				String[] t = event.split(" ");
+				System.out.println(t[1]);
+				world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
+			}
+		}
+
 		Vector3 old_pos = camera.position.cpy();
 		camera_controller.update();
 
@@ -132,12 +196,7 @@ public class BlockGame extends ApplicationAdapter {
 			@Override
 			public void run() {
 				while (online) {
-					String tmp = serverConnection.getEvent();
-
-					if (tmp.contains("SetBlock")) {
-						String[] t = tmp.split(" ");
-						world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
-					}
+					event = serverConnection.getEvent();
 
 					try {
 						Thread.sleep(100);

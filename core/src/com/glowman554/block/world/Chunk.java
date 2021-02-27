@@ -109,12 +109,62 @@ public class Chunk implements Disposable {
                     }
                 }else {
                     switch(type) {
+                        case BerryBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new BerryBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
                         case DirtBlock:
                             this.field[last_point_x][last_point_y][last_point_z] = new DirtBlock();
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
                             }
                             this.updatePosition();
+                            break;
+                        case GlassBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new GlassBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
+                        case GrassBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new GrassBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
+                        case LeavesBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new LeavesBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
+                        case StoneBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new StoneBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
+                        case TestBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new TestBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
+                        case WoodBlock:
+                            this.field[last_point_x][last_point_y][last_point_z] = new WoodBlock();
+                            if (online) {
+                                serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z);
+                            }
+                            this.updatePosition();
+                            break;
                     }
                 }
                 break;
