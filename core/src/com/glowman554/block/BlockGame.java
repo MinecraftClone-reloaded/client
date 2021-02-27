@@ -143,18 +143,16 @@ public class BlockGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
 
-		//connectToServer("localhost",90);
+		connectToServer("localhost",90);
 	}
 
 	@Override
 	public void render () {
 
 		if(online) {
-			System.out.println(event);
 			if (event.contains("sb")) {
 				String[] t = event.split(" ");
-				System.out.println(t[1]);
-				world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]));
+				world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]), Integer.parseInt(t[5]), Integer.parseInt(t[6]));
 			}
 		}
 

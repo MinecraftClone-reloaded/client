@@ -37,8 +37,8 @@ public class ServerConnection {
         return answer;
     }
 
-    public void SetBlock(String block, int x, int y, int z) {
-        String msg = String.format("sb %s %d %d %d", block, x, y, z);
+    public void SetBlock(String block, int x, int y, int z, int xOffset, int yOffset) {
+        String msg = String.format("sb %s %d %d %d %d %d", block, x, y, z, xOffset, yOffset);
         this.sendServer(msg);
     }
 

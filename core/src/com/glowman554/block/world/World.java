@@ -200,12 +200,10 @@ public class World implements Disposable {
         }
     }
 
-    public void setBlock(String block, int x, int y, int z) {
-        int chunkX = (int) (x / Chunk.chunk_size);
-        int chunkY = (int) (z / Chunk.chunk_size);
-
+    public void setBlock(String block, int x, int y, int z, int chunkX, int chunkY) {
         if(world[chunkX][chunkY] != null) {
             world[chunkX][chunkY].setBlock(block, x, y, z);
+            world[chunkX][chunkY].updatePosition();
         }
     }
 }
