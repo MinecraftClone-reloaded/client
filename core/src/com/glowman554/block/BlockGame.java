@@ -28,6 +28,7 @@ public class BlockGame extends ApplicationAdapter {
 	//TODO username
 	//TODO command line interface
 	//TODO sound
+	//TODO debug toggle
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
