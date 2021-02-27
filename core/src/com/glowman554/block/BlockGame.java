@@ -25,8 +25,6 @@ public class BlockGame extends ApplicationAdapter {
 
 
 	//TODO add discord rpc
-	//TODO username
-	//TODO command line interface
 	//TODO sound
 
 	public final float field_of_view = 67;
@@ -35,6 +33,7 @@ public class BlockGame extends ApplicationAdapter {
 	public final float camera_velocity = 40;
 	public final float camera_degrees_per_pixel = 0.08f;
 	public final float corsair_size = 25;
+
 
 	public FPSController camera_controller;
 	public Environment environment;
@@ -45,6 +44,10 @@ public class BlockGame extends ApplicationAdapter {
 	public Texture corsair;
 
 	public boolean online = false;
+	private final String username;
+	private final String host;
+	private final int port;
+
 	public boolean debug_overlay = false;
 
 	public ServerConnection serverConnection;
@@ -52,6 +55,13 @@ public class BlockGame extends ApplicationAdapter {
 	public String event = "";
 
 	public World world;
+
+	public BlockGame(String name, boolean online, String host, int port) {
+		this.username = name;
+		this.host = host;
+		this.port = port;
+		this.online = online;
+	}
 
 	@Override
 	public void create () {
@@ -147,7 +157,9 @@ public class BlockGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
 
-		connectToServer("localhost",90);
+		if(online) {
+			connectToServer(host, port);
+		}
 	}
 
 	@Override
@@ -192,7 +204,7 @@ public class BlockGame extends ApplicationAdapter {
 
 	public void connectToServer(String host, int port) {
 		this.serverConnection = new ServerConnection(host, port);
-		this.serverConnection.login("Placeholder");
+		this.serverConnection.login(username);
 
 		this.online = true;
 
