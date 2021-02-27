@@ -26,6 +26,7 @@ public class BlockGame extends ApplicationAdapter {
 
 	//TODO add discord rpc
 	//TODO sound
+	//TODO render selected block
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
