@@ -28,7 +28,6 @@ public class BlockGame extends ApplicationAdapter {
 	//TODO username
 	//TODO command line interface
 	//TODO sound
-	//TODO debug toggle
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
@@ -46,6 +45,7 @@ public class BlockGame extends ApplicationAdapter {
 	public Texture corsair;
 
 	public boolean online = false;
+	public boolean debug_overlay = false;
 
 	public ServerConnection serverConnection;
 
@@ -103,6 +103,9 @@ public class BlockGame extends ApplicationAdapter {
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
+						break;
+					case Input.Keys.F3:
+						debug_overlay = !debug_overlay;
 						break;
 
 					case Input.Keys.NUM_0:
@@ -178,7 +181,9 @@ public class BlockGame extends ApplicationAdapter {
 		float corsair_y = (Gdx.graphics.getHeight() - corsair_size) / 2;
 
 		sprite_batch.begin();
-		world.renderDebug(font, sprite_batch, camera);
+		if(debug_overlay) {
+			world.renderDebug(font, sprite_batch, camera);
+		}
 		sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 		sprite_batch.end();
 
