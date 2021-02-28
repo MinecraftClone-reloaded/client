@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
+import com.glowman554.block.discord.DiscordRP;
 import com.glowman554.block.multiplayer.ServerConnection;
 import com.glowman554.block.utils.FileUtils;
 import com.glowman554.block.world.Chunk;
@@ -24,7 +25,6 @@ import java.io.IOException;
 public class BlockGame extends ApplicationAdapter {
 
 
-	//TODO add discord rpc
 	//TODO sound
 
 	public final float field_of_view = 67;
@@ -67,6 +67,7 @@ public class BlockGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+		DiscordRP.getDiscordRP().start();
 		model_batch = new ModelBatch();
 		sprite_batch = new SpriteBatch();
 
@@ -116,6 +117,19 @@ public class BlockGame extends ApplicationAdapter {
 						break;
 					case Input.Keys.F3:
 						debug_overlay = !debug_overlay;
+						if(debug_overlay) {
+							if(!online) {
+								DiscordRP.getDiscordRP().update("Debugging Singleplayer", "In Game");
+							} else {
+								DiscordRP.getDiscordRP().update("Debugging Multiplayer", "In Game");
+							}
+						} else {
+							if(!online) {
+								DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
+							} else {
+								DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", serverConnection.host, serverConnection.port), "In Game");
+							}
+						}
 						break;
 
 					case Input.Keys.NUM_0:
@@ -157,9 +171,12 @@ public class BlockGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
 
+		DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
+
 		if(online) {
 			connectToServer(host, port);
 		}
+		connectToServer("localhost", 90);
 	}
 
 	@Override
@@ -206,6 +223,8 @@ public class BlockGame extends ApplicationAdapter {
 	}
 
 	public void connectToServer(String host, int port) {
+		DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", host, port), "In Game");
+
 		this.serverConnection = new ServerConnection(host, port);
 		this.serverConnection.login(username);
 
