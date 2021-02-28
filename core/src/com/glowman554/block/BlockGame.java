@@ -176,7 +176,6 @@ public class BlockGame extends ApplicationAdapter {
 		if(online) {
 			connectToServer(host, port);
 		}
-		connectToServer("localhost", 90);
 	}
 
 	@Override
