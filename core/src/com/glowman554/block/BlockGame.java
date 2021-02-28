@@ -25,7 +25,6 @@ import java.io.IOException;
 public class BlockGame extends ApplicationAdapter {
 
 
-	//TODO sound
 
 	public final float field_of_view = 67;
 	public final float camera_near = 1;
@@ -249,5 +248,6 @@ public class BlockGame extends ApplicationAdapter {
 	public void dispose () {
 		model_batch.dispose();
 		world.dispose();
+		Chunk.disposeSound();
 	}
 }

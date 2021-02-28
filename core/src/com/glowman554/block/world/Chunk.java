@@ -1,5 +1,7 @@
 package com.glowman554.block.world;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -13,6 +15,12 @@ public class Chunk implements Disposable {
 
     public final static int chunk_size = 8;
     public final static float field_size = 4;
+
+    private static Sound wood = Gdx.audio.newSound(Gdx.files.internal("sound/wood.ogg"));
+    private static Sound stone = Gdx.audio.newSound(Gdx.files.internal("sound/stone.ogg"));
+    private static Sound grass = Gdx.audio.newSound(Gdx.files.internal("sound/grass.ogg"));
+    private static Sound leave = Gdx.audio.newSound(Gdx.files.internal("sound/leave.ogg"));
+    private static Sound berry = Gdx.audio.newSound(Gdx.files.internal("sound/berry.ogg"));
 
     private int xOffset;
     private int yOffset;
@@ -114,6 +122,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            berry.play();
                             this.updatePosition();
                             break;
                         case DirtBlock:
@@ -121,6 +130,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            grass.play();
                             this.updatePosition();
                             break;
                         case GlassBlock:
@@ -128,6 +138,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            stone.play();
                             this.updatePosition();
                             break;
                         case GrassBlock:
@@ -135,6 +146,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            grass.play();
                             this.updatePosition();
                             break;
                         case LeavesBlock:
@@ -142,6 +154,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            leave.play();
                             this.updatePosition();
                             break;
                         case StoneBlock:
@@ -149,6 +162,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            stone.play();
                             this.updatePosition();
                             break;
                         case TestBlock:
@@ -156,6 +170,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            stone.play();
                             this.updatePosition();
                             break;
                         case WoodBlock:
@@ -163,6 +178,7 @@ public class Chunk implements Disposable {
                             if (online) {
                                 serverConnection.SetBlock(String.valueOf(type), last_point_x, last_point_y, last_point_z, xOffset, yOffset);
                             }
+                            wood.play();
                             this.updatePosition();
                             break;
                     }
@@ -337,6 +353,14 @@ public class Chunk implements Disposable {
                 }
             }
         }
+    }
+
+    public static void disposeSound() {
+        wood.dispose();
+        stone.dispose();
+        grass.dispose();
+        leave.dispose();
+        berry.dispose();
     }
 
     public void setBlock(String block, int x, int y, int z) {
