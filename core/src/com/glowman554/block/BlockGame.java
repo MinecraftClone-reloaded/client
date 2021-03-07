@@ -15,12 +15,20 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.DiscordRP;
+import com.glowman554.block.mod.ModEvent;
+import com.glowman554.block.mod.ModLoader;
 import com.glowman554.block.multiplayer.ServerConnection;
 import com.glowman554.block.utils.FileUtils;
 import com.glowman554.block.world.Chunk;
 import com.glowman554.block.world.World;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class BlockGame extends ApplicationAdapter {
 
@@ -42,6 +50,8 @@ public class BlockGame extends ApplicationAdapter {
 	public BitmapFont font;
 	public Texture corsair;
 
+	private ModLoader modLoader;
+
 	public Block.Type currentBlock = Block.Type.DirtBlock;
 
 	public boolean online = false;
@@ -55,7 +65,7 @@ public class BlockGame extends ApplicationAdapter {
 
 	public String event = "";
 
-	public World world;
+	public static World world;
 
 	public BlockGame(String name, boolean online, String host, int port) {
 		this.username = name;
@@ -67,6 +77,11 @@ public class BlockGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		DiscordRP.getDiscordRP().start();
+		try {
+			modLoader = new ModLoader();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		model_batch = new ModelBatch();
 		sprite_batch = new SpriteBatch();
 
@@ -98,6 +113,9 @@ public class BlockGame extends ApplicationAdapter {
 
 			@Override
 			public boolean keyDown(int keycode) {
+
+				ModEvent.data[0] = keycode;
+				ModEvent.callEvent("key");
 
 				switch (keycode) {
 					case Input.Keys.F1:
@@ -164,13 +182,14 @@ public class BlockGame extends ApplicationAdapter {
 
 		world = new World();
 
-
 		camera_controller.setDegreesPerPixel(camera_degrees_per_pixel);
 		camera_controller.setVelocity(camera_velocity);
 		Gdx.input.setInputProcessor(camera_controller);
 		Gdx.input.setCursorCatched(true);
 
 		DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
+
+		modLoader.enableAll();
 
 		if(online) {
 			connectToServer(host, port);
@@ -249,5 +268,6 @@ public class BlockGame extends ApplicationAdapter {
 		model_batch.dispose();
 		world.dispose();
 		Chunk.disposeSound();
+		modLoader.disableAll();
 	}
 }

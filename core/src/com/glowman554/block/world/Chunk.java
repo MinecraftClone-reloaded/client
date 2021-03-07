@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.*;
+import com.glowman554.block.mod.Mod;
+import com.glowman554.block.mod.ModEvent;
 import com.glowman554.block.multiplayer.ServerConnection;
 
 import java.util.Random;
@@ -391,5 +393,9 @@ public class Chunk implements Disposable {
                 break;
 
         }
+    }
+
+    public void setBlock(Block block, int x, int y, int z) {
+        field[x][y][z] = block;
     }
 }

@@ -53,6 +53,6 @@ public class Block implements Disposable {
     }
 
     public enum Type {
-        DirtBlock, WoodBlock, LeavesBlock, BerryBlock, GrassBlock, GlassBlock, StoneBlock, TestBlock;
+        DirtBlock, WoodBlock, LeavesBlock, BerryBlock, GrassBlock, GlassBlock, StoneBlock, TestBlock, ModBlock;
     }
 }
