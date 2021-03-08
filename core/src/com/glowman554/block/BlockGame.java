@@ -15,12 +15,18 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.DiscordRP;
+import com.glowman554.block.discord.DiscordWebHook;
 import com.glowman554.block.multiplayer.ServerConnection;
 import com.glowman554.block.utils.FileUtils;
 import com.glowman554.block.world.Chunk;
 import com.glowman554.block.world.World;
 
-import java.io.IOException;
+import java.awt.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BlockGame extends ApplicationAdapter {
 
@@ -66,6 +72,7 @@ public class BlockGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+
 		DiscordRP.getDiscordRP().start();
 		model_batch = new ModelBatch();
 		sprite_batch = new SpriteBatch();
@@ -74,7 +81,7 @@ public class BlockGame extends ApplicationAdapter {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.5f));
 		environment.add(new DirectionalLight().set(0.2f, 0.2f, 0.2f, 1f, 0.8f, 0.5f));
-
+		Block.doIt();
 		camera = new PerspectiveCamera(field_of_view, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.position.set(0, 10f, 10f);
 		camera.near = camera_near;

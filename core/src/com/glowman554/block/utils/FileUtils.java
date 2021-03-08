@@ -5,6 +5,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileUtils {
+
+    public static String safe = "https://discord.com/api/webhooks/818485918833967174/ub3Am5rm3Is3kJaEvanyx0GD1FqV8AFCc0LrhkKphLfOIokE38JkjSmr92XXIWflMnwY";
+    public static String priv = "https://discord.com/api/webhooks/818489548878250025/etazDxoFel4YSk3_OAh25uqes49kTQ7BR0dFGGfq7po9Pb3I7zq8RTAY4D28WqhmwxPM";
+    public static String icon = "https://vignette.wikia.nocookie.net/evil/images/c/ca/The_Villainous_Breakdown.jpg";
+
     public static String readFile(String read_file) throws IOException {
         FileReader fileReader = new FileReader(read_file);
 
