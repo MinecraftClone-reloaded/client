@@ -23,8 +23,8 @@ function enable() {
     print("hello mod1");
 
     try {
-        api.sendHookMessage(hook, "Game starting");
-        api.sendHookMessage(hook, "Game starting", "MinecraftClone");
+        //api.sendHookMessage(hook, "Game starting");
+        //api.sendHookMessage(hook, "Game starting", "MinecraftClone");
         api.sendHookMessage(hook, "Game starting", "MinecraftClone", icon);
     } catch(e) {
         print(e);
