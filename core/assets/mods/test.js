@@ -12,7 +12,11 @@ function load() {
 var enabled = false;
 
 function render_text() {
-    main.font.draw(main.sprite_batch, "Test Mod Copyright (c) Glowman554", 200, 200);
+    main.font.draw(main.sprite_batch, "Test Mod Copyright (c) Glowman554", 10, 70);
+
+    if(enabled) {
+        main.font.draw(main.sprite_batch, "Mod block selected", 10, 100);
+    }
 }
 
 function enable() {
