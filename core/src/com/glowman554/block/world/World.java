@@ -33,7 +33,6 @@ public class World implements Disposable {
             int playerZ = (int) (camera.position.z / Chunk.field_size);
 
 
-
             int chunk_seed = world[chunkX][chunkY].seed;
 
             font.draw(batch, String.format("FPS: %d", Gdx.graphics.getFramesPerSecond()), 10, Gdx.graphics.getHeight());
@@ -54,7 +53,7 @@ public class World implements Disposable {
         for (int i = 0; i < render_distance; i++) {
             for (int k = 0; k < render_distance; k++) {
                 try {
-                    if(this.world[chunkX + i][chunkY + k] == null) {
+                    if (this.world[chunkX + i][chunkY + k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX + i, chunkY + k);
                             this.world[chunkX + i][chunkY + k] = new Chunk(false, chunkX + i, chunkY + k);
@@ -73,7 +72,7 @@ public class World implements Disposable {
                 }
 
                 try {
-                    if(this.world[chunkX - i][chunkY - k] == null) {
+                    if (this.world[chunkX - i][chunkY - k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX - i, chunkY - k);
                             this.world[chunkX - i][chunkY - k] = new Chunk(false, chunkX - i, chunkY - k);
@@ -92,7 +91,7 @@ public class World implements Disposable {
                 }
 
                 try {
-                    if(this.world[chunkX + i][chunkY - k] == null) {
+                    if (this.world[chunkX + i][chunkY - k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX + i, chunkY - k);
                             this.world[chunkX + i][chunkY - k] = new Chunk(false, chunkX + i, chunkY - k);
@@ -111,7 +110,7 @@ public class World implements Disposable {
                 }
 
                 try {
-                    if(this.world[chunkX - i][chunkY + k] == null) {
+                    if (this.world[chunkX - i][chunkY + k] == null) {
                         if (online) {
                             String chunk = serverConnection.getChunk(chunkX - i, chunkY + k);
                             this.world[chunkX - i][chunkY + k] = new Chunk(false, chunkX - i, chunkY + k);
@@ -190,7 +189,7 @@ public class World implements Disposable {
 
         for (int i = 0; i < world_size; i++) {
             for (int k = 0; k < world_size; k++) {
-                if(world[i][k] == null) {
+                if (world[i][k] == null) {
                     text += "0<";
                 } else {
                     text += world[i][k].save() + "<";
@@ -207,7 +206,7 @@ public class World implements Disposable {
 
         for (int i = 0; i < world_size; i++) {
             for (int k = 0; k < world_size; k++) {
-                if(world_load[readsofar].equals("0")) {
+                if (world_load[readsofar].equals("0")) {
                     world[i][k] = null;
                 } else {
                     world[i][k] = new Chunk(false, i, k);
@@ -223,7 +222,7 @@ public class World implements Disposable {
     public void dispose() {
         for (int i = 0; i < world_size; i++) {
             for (int k = 0; k < world_size; k++) {
-                if(this.world[i][k] != null) {
+                if (this.world[i][k] != null) {
                     this.world[i][k].dispose();
                 }
             }
@@ -231,14 +230,14 @@ public class World implements Disposable {
     }
 
     public void setBlock(String block, int x, int y, int z, int chunkX, int chunkY) {
-        if(world[chunkX][chunkY] != null) {
+        if (world[chunkX][chunkY] != null) {
             world[chunkX][chunkY].setBlock(block, x, y, z);
             world[chunkX][chunkY].updatePosition();
         }
     }
 
     public void setBlock(Block block, int x, int y, int z, int chunkX, int chunkY) {
-        if(world[chunkX][chunkY] != null) {
+        if (world[chunkX][chunkY] != null) {
             world[chunkX][chunkY].setBlock(block, x, y, z);
             world[chunkX][chunkY].updatePosition();
         }

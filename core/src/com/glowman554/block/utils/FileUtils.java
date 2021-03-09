@@ -9,7 +9,7 @@ public class FileUtils {
         String file = "";
 
         int i;
-        while((i = fileReader.read()) != -1) {
+        while ((i = fileReader.read()) != -1) {
             file += (char) i;
         }
         return file;

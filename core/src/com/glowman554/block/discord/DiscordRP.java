@@ -7,11 +7,10 @@ import net.arikia.dev.drpc.DiscordUser;
 import net.arikia.dev.drpc.callbacks.ReadyCallback;
 
 public class DiscordRP {
+    private static DiscordRP discordRP = new DiscordRP();
     private boolean running = true;
     private long created = 0;
     private String client_id = "806882188673941505";
-
-    private static DiscordRP discordRP = new DiscordRP();
 
     public static DiscordRP getDiscordRP() {
         return discordRP;

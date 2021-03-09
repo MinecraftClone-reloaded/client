@@ -16,10 +16,10 @@ public class ModAPI {
     }
 
     public static void newChunk(boolean force, boolean generate, int x, int y) {
-        if(force) {
+        if (force) {
             BlockGame.world.world[x][y] = new Chunk(generate, x, y);
         } else {
-            if(BlockGame.world.world[x][y] == null) {
+            if (BlockGame.world.world[x][y] == null) {
                 BlockGame.world.world[x][y] = new Chunk(generate, x, y);
             }
         }

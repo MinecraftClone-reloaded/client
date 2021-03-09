@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.DiscordRP;
-import com.glowman554.block.mod.Mod;
 import com.glowman554.block.mod.ModEvent;
 import com.glowman554.block.mod.ModLoader;
 import com.glowman554.block.multiplayer.ServerConnection;
@@ -23,284 +22,269 @@ import com.glowman554.block.utils.FileUtils;
 import com.glowman554.block.world.Chunk;
 import com.glowman554.block.world.World;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.List;
 
 public class BlockGame extends ApplicationAdapter {
 
 
+    public static ModelBatch model_batch;
+    public static SpriteBatch sprite_batch;
+    public static PerspectiveCamera camera;
+    public static BitmapFont font;
+    public static World world;
+    public final float field_of_view = 67;
+    public final float camera_near = 1;
+    public final float camera_far = 300;
+    public final float camera_velocity = 40;
+    public final float camera_degrees_per_pixel = 0.08f;
+    public final float corsair_size = 25;
+    private final String username;
+    private final String host;
+    private final int port;
+    public FPSController camera_controller;
+    public Environment environment;
+    public Texture corsair;
+    public Block.Type currentBlock = Block.Type.DirtBlock;
+    public boolean online = false;
+    public boolean debug_overlay = false;
 
-	public final float field_of_view = 67;
-	public final float camera_near = 1;
-	public final float camera_far = 300;
-	public final float camera_velocity = 40;
-	public final float camera_degrees_per_pixel = 0.08f;
-	public final float corsair_size = 25;
+    public ServerConnection serverConnection;
 
+    public String event = "";
+    private ModLoader modLoader;
 
-	public FPSController camera_controller;
-	public Environment environment;
-	public static ModelBatch model_batch;
-	public static SpriteBatch sprite_batch;
-	public static PerspectiveCamera camera;
-	public static BitmapFont font;
-	public Texture corsair;
+    public BlockGame(String name, boolean online, String host, int port) {
+        this.username = name;
+        this.host = host;
+        this.port = port;
+        this.online = online;
+    }
 
-	private ModLoader modLoader;
+    @Override
+    public void create() {
+        DiscordRP.getDiscordRP().start();
+        try {
+            modLoader = new ModLoader();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        model_batch = new ModelBatch();
+        sprite_batch = new SpriteBatch();
 
-	public Block.Type currentBlock = Block.Type.DirtBlock;
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.5f));
+        environment.add(new DirectionalLight().set(0.2f, 0.2f, 0.2f, 1f, 0.8f, 0.5f));
 
-	public boolean online = false;
-	private final String username;
-	private final String host;
-	private final int port;
+        camera = new PerspectiveCamera(field_of_view, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.position.set(0, 10f, 10f);
+        camera.near = camera_near;
+        camera.far = camera_far;
+        camera.update();
 
-	public boolean debug_overlay = false;
+        font = new BitmapFont(Gdx.files.internal("font/Calibri.fnt"), false);
+        corsair = new Texture(Gdx.files.internal("interface/corsair.png"));
 
-	public ServerConnection serverConnection;
+        camera_controller = new FPSController(camera) {
 
-	public String event = "";
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                ModEvent.data[0] = screenX;
+                ModEvent.data[1] = screenY;
+                ModEvent.data[2] = pointer;
+                ModEvent.data[3] = button;
 
-	public static World world;
+                ModEvent.callEvent("touchDown");
 
-	public BlockGame(String name, boolean online, String host, int port) {
-		this.username = name;
-		this.host = host;
-		this.port = port;
-		this.online = online;
-	}
+                if (!ModEvent.continue_action) {
+                    ModEvent.continue_action = true;
+                    return super.touchDown(screenX, screenY, pointer, button);
+                }
 
-	@Override
-	public void create () {
-		DiscordRP.getDiscordRP().start();
-		try {
-			modLoader = new ModLoader();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		model_batch = new ModelBatch();
-		sprite_batch = new SpriteBatch();
+                if (button == 0) {
+                    world.editBoxByRayCast(camera, camera.position, camera.direction, currentBlock, online, serverConnection);
+                } else if (button == 1) {
+                    world.editBoxByRayCast(camera, camera.position, camera.direction, (Block.Type) null, online, serverConnection);
+                }
+                return super.touchDown(screenX, screenY, pointer, button);
+            }
 
-		environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.5f));
-		environment.add(new DirectionalLight().set(0.2f, 0.2f, 0.2f, 1f, 0.8f, 0.5f));
+            @Override
+            public boolean keyDown(int keycode) {
 
-		camera = new PerspectiveCamera(field_of_view, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.position.set(0, 10f, 10f);
-		camera.near = camera_near;
-		camera.far = camera_far;
-		camera.update();
+                ModEvent.data[0] = keycode;
+                ModEvent.callEvent("keyDown");
 
-		font = new BitmapFont(Gdx.files.internal("font/Calibri.fnt"), false);
-		corsair = new Texture(Gdx.files.internal("interface/corsair.png"));
+                if (!ModEvent.continue_action) {
+                    ModEvent.continue_action = true;
+                    return super.keyDown(keycode);
+                }
 
-		camera_controller = new FPSController(camera) {
+                switch (keycode) {
+                    case Input.Keys.F1:
+                        try {
+                            FileUtils.writeFile(world.save(), "world.msave");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case Input.Keys.F2:
+                        try {
+                            world.load(FileUtils.readFile("world.msave"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case Input.Keys.F3:
+                        debug_overlay = !debug_overlay;
+                        if (debug_overlay) {
+                            if (!online) {
+                                DiscordRP.getDiscordRP().update("Debugging Singleplayer", "In Game");
+                            } else {
+                                DiscordRP.getDiscordRP().update("Debugging Multiplayer", "In Game");
+                            }
+                        } else {
+                            if (!online) {
+                                DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
+                            } else {
+                                DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", serverConnection.host, serverConnection.port), "In Game");
+                            }
+                        }
+                        break;
 
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				ModEvent.data[0] = screenX;
-				ModEvent.data[1] = screenY;
-				ModEvent.data[2] = pointer;
-				ModEvent.data[3] = button;
+                    case Input.Keys.NUM_0:
+                        currentBlock = Block.Type.BerryBlock;
+                        break;
+                    case Input.Keys.NUM_1:
+                        currentBlock = Block.Type.DirtBlock;
+                        break;
+                    case Input.Keys.NUM_2:
+                        currentBlock = Block.Type.GlassBlock;
+                        break;
+                    case Input.Keys.NUM_3:
+                        currentBlock = Block.Type.GrassBlock;
+                        break;
+                    case Input.Keys.NUM_4:
+                        currentBlock = Block.Type.LeavesBlock;
+                        break;
+                    case Input.Keys.NUM_5:
+                        currentBlock = Block.Type.StoneBlock;
+                        break;
+                    case Input.Keys.NUM_6:
+                        currentBlock = Block.Type.TestBlock;
+                        break;
+                    case Input.Keys.NUM_7:
+                        currentBlock = Block.Type.WoodBlock;
+                        break;
 
-				ModEvent.callEvent("touchDown");
+                }
 
-				if(!ModEvent.continue_action) {
-					ModEvent.continue_action = true;
-					return super.touchDown(screenX, screenY, pointer, button);
-				}
+                return super.keyDown(keycode);
+            }
+        };
 
-				if(button == 0) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, currentBlock, online, serverConnection);
-				} else if(button == 1) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, (Block.Type) null, online, serverConnection);
-				}
-				return super.touchDown(screenX, screenY, pointer, button);
-			}
+        world = new World();
 
-			@Override
-			public boolean keyDown(int keycode) {
+        camera_controller.setDegreesPerPixel(camera_degrees_per_pixel);
+        camera_controller.setVelocity(camera_velocity);
+        Gdx.input.setInputProcessor(camera_controller);
+        Gdx.input.setCursorCatched(true);
 
-				ModEvent.data[0] = keycode;
-				ModEvent.callEvent("keyDown");
+        DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
 
-				if(!ModEvent.continue_action) {
-					ModEvent.continue_action = true;
-					return super.keyDown(keycode);
-				}
+        modLoader.enableAll();
 
-				switch (keycode) {
-					case Input.Keys.F1:
-						try {
-							FileUtils.writeFile(world.save(), "world.msave");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						break;
-					case Input.Keys.F2:
-						try {
-							world.load(FileUtils.readFile("world.msave"));
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						break;
-					case Input.Keys.F3:
-						debug_overlay = !debug_overlay;
-						if(debug_overlay) {
-							if(!online) {
-								DiscordRP.getDiscordRP().update("Debugging Singleplayer", "In Game");
-							} else {
-								DiscordRP.getDiscordRP().update("Debugging Multiplayer", "In Game");
-							}
-						} else {
-							if(!online) {
-								DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
-							} else {
-								DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", serverConnection.host, serverConnection.port), "In Game");
-							}
-						}
-						break;
+        if (online) {
+            connectToServer(host, port);
+        }
+    }
 
-					case Input.Keys.NUM_0:
-						currentBlock = Block.Type.BerryBlock;
-						break;
-					case Input.Keys.NUM_1:
-						currentBlock = Block.Type.DirtBlock;
-						break;
-					case Input.Keys.NUM_2:
-						currentBlock = Block.Type.GlassBlock;
-						break;
-					case Input.Keys.NUM_3:
-						currentBlock = Block.Type.GrassBlock;
-						break;
-					case Input.Keys.NUM_4:
-						currentBlock = Block.Type.LeavesBlock;
-						break;
-					case Input.Keys.NUM_5:
-						currentBlock = Block.Type.StoneBlock;
-						break;
-					case Input.Keys.NUM_6:
-						currentBlock = Block.Type.TestBlock;
-						break;
-					case Input.Keys.NUM_7:
-						currentBlock = Block.Type.WoodBlock;
-						break;
+    @Override
+    public void render() {
 
-				}
+        if (online) {
+            if (event.contains("sb")) {
+                String[] t = event.split(" ");
+                world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]), Integer.parseInt(t[5]), Integer.parseInt(t[6]));
+            }
+        }
 
-				return super.keyDown(keycode);
-			}
-		};
+        Vector3 old_pos = camera.position.cpy();
+        camera_controller.update();
 
-		world = new World();
+        if (world.hittingBox(camera, camera.position)) {
+            camera.position.x = old_pos.x;
+            camera.position.y = old_pos.y;
+            camera.position.z = old_pos.z;
+            camera.update();
+        }
 
-		camera_controller.setDegreesPerPixel(camera_degrees_per_pixel);
-		camera_controller.setVelocity(camera_velocity);
-		Gdx.input.setInputProcessor(camera_controller);
-		Gdx.input.setCursorCatched(true);
+        Gdx.gl.glClearColor(0.5f, 0.8f, 1f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		DiscordRP.getDiscordRP().update("Playing Singleplayer", "In Game");
+        model_batch.begin(camera);
+        world.renderWorld(model_batch, environment, camera, online, serverConnection);
 
-		modLoader.enableAll();
+        ModEvent.callEvent("renderModelBatch");
 
-		if(online) {
-			connectToServer(host, port);
-		}
-	}
+        if (!ModEvent.continue_action) {
+            ModEvent.continue_action = true;
+            return;
+        }
+        model_batch.end();
 
-	@Override
-	public void render () {
+        float corsair_x = (Gdx.graphics.getWidth() - corsair_size) / 2;
+        float corsair_y = (Gdx.graphics.getHeight() - corsair_size) / 2;
 
-		if(online) {
-			if (event.contains("sb")) {
-				String[] t = event.split(" ");
-				world.setBlock(t[1], Integer.parseInt(t[2]), Integer.parseInt(t[3]), Integer.parseInt(t[4]), Integer.parseInt(t[5]), Integer.parseInt(t[6]));
-			}
-		}
+        sprite_batch.begin();
+        if (debug_overlay) {
+            world.renderDebug(font, sprite_batch, camera);
+            font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight() - 5 * 30);
+        } else {
+            font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
+        }
+        sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 
-		Vector3 old_pos = camera.position.cpy();
-		camera_controller.update();
+        ModEvent.callEvent("renderSpriteBatch");
 
-		if(world.hittingBox(camera, camera.position)) {
-			camera.position.x = old_pos.x;
-			camera.position.y = old_pos.y;
-			camera.position.z = old_pos.z;
-			camera.update();
-		}
+        if (!ModEvent.continue_action) {
+            ModEvent.continue_action = true;
+            return;
+        }
+        sprite_batch.end();
 
-		Gdx.gl.glClearColor(0.5f, 0.8f, 1f, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        //System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
+    }
 
-		model_batch.begin(camera);
-		world.renderWorld(model_batch, environment, camera, online, serverConnection);
+    public void connectToServer(String host, int port) {
+        DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", host, port), "In Game");
 
-		ModEvent.callEvent("renderModelBatch");
+        this.serverConnection = new ServerConnection(host, port);
+        this.serverConnection.login(username);
 
-		if(!ModEvent.continue_action) {
-			ModEvent.continue_action = true;
-			return;
-		}
-		model_batch.end();
+        this.online = true;
 
-		float corsair_x = (Gdx.graphics.getWidth() - corsair_size) / 2;
-		float corsair_y = (Gdx.graphics.getHeight() - corsair_size) / 2;
+        new Thread("Server callback") {
+            @Override
+            public void run() {
+                while (online) {
+                    event = serverConnection.getEvent();
 
-		sprite_batch.begin();
-		if(debug_overlay) {
-			world.renderDebug(font, sprite_batch, camera);
-			font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight() - 5 * 30);
-		} else {
-			font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
-		}
-		sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+    }
 
-		ModEvent.callEvent("renderSpriteBatch");
-
-		if(!ModEvent.continue_action) {
-			ModEvent.continue_action = true;
-			return;
-		}
-		sprite_batch.end();
-
-		//System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
-	}
-
-	public void connectToServer(String host, int port) {
-		DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", host, port), "In Game");
-
-		this.serverConnection = new ServerConnection(host, port);
-		this.serverConnection.login(username);
-
-		this.online = true;
-
-		new Thread("Server callback") {
-			@Override
-			public void run() {
-				while (online) {
-					event = serverConnection.getEvent();
-
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}.start();
-	}
-	
-	@Override
-	public void dispose () {
-		model_batch.dispose();
-		world.dispose();
-		Chunk.disposeSound();
-		modLoader.disableAll();
-	}
+    @Override
+    public void dispose() {
+        model_batch.dispose();
+        world.dispose();
+        Chunk.disposeSound();
+        modLoader.disableAll();
+    }
 }

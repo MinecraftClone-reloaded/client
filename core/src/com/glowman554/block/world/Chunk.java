@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import com.glowman554.block.block.*;
-import com.glowman554.block.mod.Mod;
-import com.glowman554.block.mod.ModEvent;
 import com.glowman554.block.multiplayer.ServerConnection;
 
 import java.util.Random;
@@ -23,13 +21,11 @@ public class Chunk implements Disposable {
     private static Sound grass = Gdx.audio.newSound(Gdx.files.internal("sound/grass.ogg"));
     private static Sound leave = Gdx.audio.newSound(Gdx.files.internal("sound/leave.ogg"));
     private static Sound berry = Gdx.audio.newSound(Gdx.files.internal("sound/berry.ogg"));
-
+    public int seed;
     private int xOffset;
     private int yOffset;
-
-    public int seed;
-
     private Block field[][][];
+
     public Chunk(boolean generate, int xOffset, int yOffset) {
         this.field = new Block[chunk_size][chunk_size][chunk_size];
 
@@ -43,7 +39,7 @@ public class Chunk implements Disposable {
         Random rand = new Random();
         rand.setSeed(this.seed);
 
-        if(generate) {
+        if (generate) {
             for (int i = 0; i < chunk_size; i++) {
                 for (int k = 0; k < chunk_size; k++) {
                     this.field[i][0][k] = new GrassBlock();
@@ -62,6 +58,14 @@ public class Chunk implements Disposable {
         }
     }
 
+    public static void disposeSound() {
+        wood.dispose();
+        stone.dispose();
+        grass.dispose();
+        leave.dispose();
+        berry.dispose();
+    }
+
     public void updatePosition() {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
@@ -69,7 +73,7 @@ public class Chunk implements Disposable {
                     float x = (i + chunk_size * this.xOffset) * field_size;
                     float y = j * field_size;
                     float z = (k + chunk_size * this.yOffset) * field_size;
-                    if(this.field[i][j][k] != null) {
+                    if (this.field[i][j][k] != null) {
                         this.field[i][j][k].setPosition(x, y, z);
                     }
                 }
@@ -81,7 +85,7 @@ public class Chunk implements Disposable {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
                 for (int k = 0; k < chunk_size; k++) {
-                    if(this.field[i][j][k] != null) {
+                    if (this.field[i][j][k] != null) {
                         batch.render(this.field[i][j][k].instance, environment);
                     }
                 }
@@ -117,8 +121,8 @@ public class Chunk implements Disposable {
                         this.field[x][y][z] = null;
                         this.updatePosition();
                     }
-                }else {
-                    switch(type) {
+                } else {
+                    switch (type) {
                         case BerryBlock:
                             this.field[last_point_x][last_point_y][last_point_z] = new BerryBlock();
                             if (online) {
@@ -222,7 +226,7 @@ public class Chunk implements Disposable {
                         this.field[x][y][z] = null;
                         this.updatePosition();
                     }
-                }else {
+                } else {
                     this.field[last_point_x][last_point_y][last_point_z] = type;
                     this.updatePosition();
                 }
@@ -241,27 +245,27 @@ public class Chunk implements Disposable {
         int y = Math.round(point.y);
         int z = Math.round(point.z);
 
-        if(x > chunk_size - 1) {
+        if (x > chunk_size - 1) {
             x = chunk_size - 1;
         }
 
-        if(y > chunk_size - 1) {
+        if (y > chunk_size - 1) {
             y = chunk_size - 1;
         }
 
-        if(z > chunk_size - 1) {
+        if (z > chunk_size - 1) {
             z = chunk_size - 1;
         }
 
-        if(x < 0) {
+        if (x < 0) {
             x = 0;
         }
 
-        if(y < 0) {
+        if (y < 0) {
             y = 0;
         }
 
-        if(z < 0) {
+        if (z < 0) {
             z = 0;
         }
 
@@ -327,7 +331,7 @@ public class Chunk implements Disposable {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
                 for (int k = 0; k < chunk_size; k++) {
-                    if(this.field[i][j][k] != null) {
+                    if (this.field[i][j][k] != null) {
                         text += this.field[i][j][k].type + ",";
                     } else {
                         text += "0,";
@@ -346,10 +350,10 @@ public class Chunk implements Disposable {
         for (int i = 0; i < chunk_size; i++) {
             for (int j = 0; j < chunk_size; j++) {
                 for (int k = 0; k < chunk_size; k++) {
-                    if(world_load[readsofar].equals("0")) {
+                    if (world_load[readsofar].equals("0")) {
 
                     } else {
-                        switch(Enum.valueOf(Block.Type.class, world_load[readsofar])) {
+                        switch (Enum.valueOf(Block.Type.class, world_load[readsofar])) {
                             case DirtBlock:
                                 field[i][j][k] = new DirtBlock();
                                 break;
@@ -390,20 +394,12 @@ public class Chunk implements Disposable {
                     float x = i * field_size;
                     float y = j * field_size;
                     float z = k * field_size;
-                    if(this.field[i][j][k] != null) {
+                    if (this.field[i][j][k] != null) {
                         this.field[i][j][k].dispose();
                     }
                 }
             }
         }
-    }
-
-    public static void disposeSound() {
-        wood.dispose();
-        stone.dispose();
-        grass.dispose();
-        leave.dispose();
-        berry.dispose();
     }
 
     public void setBlock(String block, int x, int y, int z) {
