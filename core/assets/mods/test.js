@@ -4,6 +4,7 @@ var main = Java.type("com.glowman554.block.BlockGame");
 var hook_api = Java.type("com.glowman554.block.discord.WebHookAPI");
 
 var hook = "https://discord.com/api/webhooks/818509367837589597/xfaiBbeDkQNgdnbLaLTrQn2mgZRdtMxQAaLVzNsZ6DIR_AI6JyyqrO5ZMxctS9rMaFvc";
+var icon = "https://vignette.wikia.nocookie.net/evil/images/c/ca/The_Villainous_Breakdown.jpg";
 
 function load() {
 }
@@ -12,6 +13,14 @@ var enabled = false;
 
 function enable() {
     print("hello mod1");
+
+    try {
+        api.sendHookMessage(hook, "Game starting");
+        api.sendHookMessage(hook, "Game starting", "MinecraftClone");
+        api.sendHookMessage(hook, "Game starting", "MinecraftClone", icon);
+    } catch(e) {
+        print(e);
+    }
 
     event.registerEvent("test", function() {
         print("hello world from event");
