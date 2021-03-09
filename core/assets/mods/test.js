@@ -11,6 +11,10 @@ function load() {
 
 var enabled = false;
 
+function render_text() {
+    main.font.draw(main.sprite_batch, "Test Mod Copyright (c) Glowman554", 200, 200);
+}
+
 function enable() {
     print("hello mod1");
 
@@ -45,6 +49,8 @@ function enable() {
         print("New chunk " + event.data[0] + " " + event.data[1]);
         api.modBlock("badlogic.jpg", 0, 1, 0, event.data[0], event.data[1]);
     });
+
+    event.registerEvent("renderSpriteBatch", render_text);
 
     event.callEvent("test");
 }

@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class BlockGame extends ApplicationAdapter {
 
@@ -45,10 +46,10 @@ public class BlockGame extends ApplicationAdapter {
 
 	public FPSController camera_controller;
 	public Environment environment;
-	public ModelBatch model_batch;
-	public SpriteBatch sprite_batch;
+	public static ModelBatch model_batch;
+	public static SpriteBatch sprite_batch;
 	public static PerspectiveCamera camera;
-	public BitmapFont font;
+	public static BitmapFont font;
 	public Texture corsair;
 
 	private ModLoader modLoader;
@@ -239,6 +240,13 @@ public class BlockGame extends ApplicationAdapter {
 
 		model_batch.begin(camera);
 		world.renderWorld(model_batch, environment, camera, online, serverConnection);
+
+		ModEvent.callEvent("renderModelBatch");
+
+		if(!ModEvent.continue_action) {
+			ModEvent.continue_action = true;
+			return;
+		}
 		model_batch.end();
 
 		float corsair_x = (Gdx.graphics.getWidth() - corsair_size) / 2;
@@ -252,6 +260,13 @@ public class BlockGame extends ApplicationAdapter {
 			font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
 		}
 		sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
+
+		ModEvent.callEvent("renderSpriteBatch");
+
+		if(!ModEvent.continue_action) {
+			ModEvent.continue_action = true;
+			return;
+		}
 		sprite_batch.end();
 
 		//System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
