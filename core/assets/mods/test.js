@@ -1,8 +1,11 @@
 var api = Java.type("com.glowman554.block.mod.ModAPI");
 var event = Java.type("com.glowman554.block.mod.ModEvent");
+var main = Java.type("com.glowman554.block.BlockGame");
 
 function load() {
 }
+
+var enabled = false;
 
 function enable() {
     print("hello mod1");
@@ -11,8 +14,19 @@ function enable() {
         print("hello world from event");
     });
 
-    event.registerEvent("key", function() {
+    event.registerEvent("keyDown", function() {
         print("Key event " + event.data[0]);
+        if(event.data[0] == 15) {
+            enabled = !enabled;
+        }
+    });
+
+    event.registerEvent("touchDown", function() {
+        print("Touch down");
+        if(enabled) {
+            main.world.editBoxByRayCast(main.camera, main.camera.position, main.camera.direction, api.newModBlock("badlogic.jpg"), false, null);
+            event.continue_action = false;
+        }
     });
 
     event.registerEvent("newChunk", function() {

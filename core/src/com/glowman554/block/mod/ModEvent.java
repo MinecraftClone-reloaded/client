@@ -9,7 +9,8 @@ import java.util.List;
 public class ModEvent {
     static HashMap<String, List<ScriptObjectMirror>> events = new HashMap<>();
 
-    public static int[] data = new int[512];
+    public static int[] data = new int[8];
+    public static boolean continue_action = true;
 
     public static void registerEvent(String name, ScriptObjectMirror executor) {
         events.computeIfAbsent(name, k -> new ArrayList<>());

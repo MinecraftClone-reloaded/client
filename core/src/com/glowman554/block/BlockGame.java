@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.DiscordRP;
+import com.glowman554.block.mod.Mod;
 import com.glowman554.block.mod.ModEvent;
 import com.glowman554.block.mod.ModLoader;
 import com.glowman554.block.multiplayer.ServerConnection;
@@ -46,7 +47,7 @@ public class BlockGame extends ApplicationAdapter {
 	public Environment environment;
 	public ModelBatch model_batch;
 	public SpriteBatch sprite_batch;
-	public PerspectiveCamera camera;
+	public static PerspectiveCamera camera;
 	public BitmapFont font;
 	public Texture corsair;
 
@@ -103,10 +104,22 @@ public class BlockGame extends ApplicationAdapter {
 
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				ModEvent.data[0] = screenX;
+				ModEvent.data[1] = screenY;
+				ModEvent.data[2] = pointer;
+				ModEvent.data[3] = button;
+
+				ModEvent.callEvent("touchDown");
+
+				if(!ModEvent.continue_action) {
+					ModEvent.continue_action = true;
+					return super.touchDown(screenX, screenY, pointer, button);
+				}
+
 				if(button == 0) {
 					world.editBoxByRayCast(camera, camera.position, camera.direction, currentBlock, online, serverConnection);
 				} else if(button == 1) {
-					world.editBoxByRayCast(camera, camera.position, camera.direction, null, online, serverConnection);
+					world.editBoxByRayCast(camera, camera.position, camera.direction, (Block.Type) null, online, serverConnection);
 				}
 				return super.touchDown(screenX, screenY, pointer, button);
 			}
@@ -115,7 +128,12 @@ public class BlockGame extends ApplicationAdapter {
 			public boolean keyDown(int keycode) {
 
 				ModEvent.data[0] = keycode;
-				ModEvent.callEvent("key");
+				ModEvent.callEvent("keyDown");
+
+				if(!ModEvent.continue_action) {
+					ModEvent.continue_action = true;
+					return super.keyDown(keycode);
+				}
 
 				switch (keycode) {
 					case Input.Keys.F1:

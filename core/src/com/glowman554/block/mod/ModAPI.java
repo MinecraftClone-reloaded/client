@@ -8,6 +8,10 @@ public class ModAPI {
         BlockGame.world.setBlock(new ModBlock(path), x, y, z, chunkX, chunkY);
     }
 
+    public static ModBlock newModBlock(String path) {
+        return new ModBlock(path);
+    }
+
     public static void newChunk(boolean force, boolean generate, int x, int y) {
         if(force) {
             BlockGame.world.world[x][y] = new Chunk(generate, x, y);

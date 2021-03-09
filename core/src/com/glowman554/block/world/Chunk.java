@@ -194,6 +194,47 @@ public class Chunk implements Disposable {
         }
     }
 
+    public void editBoxByRayCast(Vector3 start_point, Vector3 direction, Block type, boolean online, ServerConnection serverConnection) {
+        int last_point_x = 0;
+        int last_point_y = 0;
+        int last_point_z = 0;
+
+        for (int i = 1; i < chunk_size * 2; i++) {
+            Vector3 tmp_start = new Vector3(start_point);
+            Vector3 tmp_direction = new Vector3(direction);
+            tmp_direction.nor();
+            tmp_direction.scl(i);
+            Vector3 line = tmp_start.add(tmp_direction);
+
+            line.scl(1 / field_size);
+            int x = Math.round(line.x);
+            int y = Math.round(line.y);
+            int z = Math.round(line.z);
+
+            if (x > (chunk_size - 1) || y > (chunk_size - 1) || z > (chunk_size - 1) || x < 0 || y < 0 || z < 0) {
+                break;
+            }
+
+            if (this.field[x][y][z] != null) {
+                if (type == null) {
+                    if (this.field[x][y][z] != null) {
+                        this.field[x][y][z].dispose();
+                        this.field[x][y][z] = null;
+                        this.updatePosition();
+                    }
+                }else {
+                    this.field[last_point_x][last_point_y][last_point_z] = type;
+                    this.updatePosition();
+                }
+                break;
+            }
+
+            last_point_x = x;
+            last_point_y = y;
+            last_point_z = z;
+        }
+    }
+
     public boolean hittingBox(Vector3 point) {
         point.scl(1 / field_size);
         int x = Math.round(point.x);
