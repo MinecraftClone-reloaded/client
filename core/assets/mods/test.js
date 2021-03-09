@@ -1,6 +1,9 @@
 var api = Java.type("com.glowman554.block.mod.ModAPI");
 var event = Java.type("com.glowman554.block.mod.ModEvent");
 var main = Java.type("com.glowman554.block.BlockGame");
+var hook_api = Java.type("com.glowman554.block.discord.WebHookAPI");
+
+var hook = "https://discord.com/api/webhooks/818509367837589597/xfaiBbeDkQNgdnbLaLTrQn2mgZRdtMxQAaLVzNsZ6DIR_AI6JyyqrO5ZMxctS9rMaFvc";
 
 function load() {
 }
