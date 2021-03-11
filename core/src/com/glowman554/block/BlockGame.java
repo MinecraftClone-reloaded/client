@@ -14,6 +14,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
+import com.glowman554.block.command.CommandEvent;
+import com.glowman554.block.command.CommandManager;
+import com.glowman554.block.command.impl.ExitCommand;
+import com.glowman554.block.command.impl.LoadCommand;
+import com.glowman554.block.command.impl.SaveCommand;
 import com.glowman554.block.discord.DiscordRP;
 import com.glowman554.block.gui.ChatRenderer;
 import com.glowman554.block.mod.ModEvent;
@@ -38,6 +43,7 @@ public class BlockGame extends ApplicationAdapter {
     public BitmapFont font;
     public World world;
     public ChatRenderer chatRenderer;
+    public CommandManager commandManager;
     public final float field_of_view = 67;
     public final float camera_near = 1;
     public final float camera_far = 300;
@@ -98,6 +104,11 @@ public class BlockGame extends ApplicationAdapter {
 
         chatRenderer = new ChatRenderer();
 
+        commandManager = new CommandManager();
+        commandManager.registerCommand("exit", "exit game", new ExitCommand());
+        commandManager.registerCommand("save", "save world", new SaveCommand());
+        commandManager.registerCommand("load", "load world", new LoadCommand());
+
         camera_controller = new FPSController(camera) {
 
             @Override
@@ -128,6 +139,7 @@ public class BlockGame extends ApplicationAdapter {
                         chat.add(" ");
                     } else  if(keycode == Input.Keys.ENTER) {
                         input = false;
+                        commandManager.onCommand(new CommandEvent(toText(chat).toLowerCase(), toText(chat).toLowerCase().split(" ")[0], CommandEvent.getArguments(toText(chat).toLowerCase().split(" "))));
                     } else {
                         chat.add(Input.Keys.toString(keycode));
                     }
