@@ -24,6 +24,9 @@ import com.glowman554.block.world.Chunk;
 import com.glowman554.block.world.World;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class BlockGame extends ApplicationAdapter {
 
@@ -50,6 +53,9 @@ public class BlockGame extends ApplicationAdapter {
     public Block.Type currentBlock = Block.Type.DirtBlock;
     public boolean online = false;
     public boolean debug_overlay = false;
+
+    public List<String> chat = new ArrayList<>();
+    public boolean input = false;
 
     public ServerConnection serverConnection;
 
@@ -115,6 +121,21 @@ public class BlockGame extends ApplicationAdapter {
                     return super.keyDown(keycode);
                 }
 
+                if(input) {
+                    if(keycode == Input.Keys.BACKSPACE) {
+                        chat.remove(chat.size() - 1);
+                    } else if(keycode == Input.Keys.SPACE) {
+                        chat.add(" ");
+                    } else  if(keycode == Input.Keys.ENTER) {
+                        input = false;
+                    } else {
+                        chat.add(Input.Keys.toString(keycode));
+                    }
+
+                    System.out.println(toText(chat));
+                    return false;
+                }
+
                 switch (keycode) {
                     case Input.Keys.F1:
                         try {
@@ -171,6 +192,11 @@ public class BlockGame extends ApplicationAdapter {
                     case Input.Keys.NUM_7:
                         currentBlock = Block.Type.WoodBlock;
                         break;
+                    case Input.Keys.T:
+                        input = true;
+                        chat = new ArrayList<>();
+                        break;
+
 
                 }
 
@@ -253,6 +279,10 @@ public class BlockGame extends ApplicationAdapter {
             font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
             chatRenderer.render(sprite_batch, 1);
         }
+
+        if(input) {
+            font.draw(sprite_batch, "> " + toText(chat).toLowerCase(), 10, 30);
+        }
         sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 
         if(!ModEvent.callEvent("renderSpriteBatch", sprite_batch)) {
@@ -264,6 +294,17 @@ public class BlockGame extends ApplicationAdapter {
 
         //System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));
     }
+
+    public String toText(List<String> a) {
+        final String[] text = {""};
+
+        a.forEach(data -> {
+            text[0] = text[0] + data;
+        });
+
+        return text[0];
+    }
+
 
     public void connectToServer(String host, int port) {
         DiscordRP.getDiscordRP().update(String.format("Playing on %s:%d", host, port), "In Game");
