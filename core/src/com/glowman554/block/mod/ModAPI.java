@@ -4,6 +4,7 @@ import com.glowman554.block.BlockGame;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.WebHookAPI;
 import com.glowman554.block.world.Chunk;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 
 import java.io.IOException;
 
@@ -14,6 +15,14 @@ public class ModAPI {
 
     public static ModBlock newModBlock(String path) {
         return new ModBlock(path);
+    }
+
+    public static void addCommand(String command, String help, String help_long, ScriptObjectMirror command_executor) {
+        BlockGame.game.commandManager.registerCommand(command, help, new ModCommand(help_long, command_executor));
+    }
+
+    public static void addCommand(String command, String help, ScriptObjectMirror command_executor) {
+        BlockGame.game.commandManager.registerCommand(command, help, new ModCommand("Not specified!", command_executor));
     }
 
     public static void newChunk(boolean force, boolean generate, int x, int y) {

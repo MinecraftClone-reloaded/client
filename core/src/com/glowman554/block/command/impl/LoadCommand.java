@@ -11,6 +11,7 @@ public class LoadCommand implements Command {
     public void execute(CommandEvent event) {
         if(event.args.length != 1) {
             event.CommandFail();
+            return;
         }
 
         BlockGame.game.world = new World();

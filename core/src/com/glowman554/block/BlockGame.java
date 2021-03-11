@@ -134,7 +134,9 @@ public class BlockGame extends ApplicationAdapter {
 
                 if(input) {
                     if(keycode == Input.Keys.BACKSPACE) {
-                        chat.remove(chat.size() - 1);
+                        if(chat.size() != 0) {
+                            chat.remove(chat.size() - 1);
+                        }
                     } else if(keycode == Input.Keys.SPACE) {
                         chat.add(" ");
                     } else  if(keycode == Input.Keys.ENTER) {
@@ -144,7 +146,6 @@ public class BlockGame extends ApplicationAdapter {
                         chat.add(Input.Keys.toString(keycode));
                     }
 
-                    System.out.println(toText(chat));
                     return false;
                 }
 
@@ -242,7 +243,8 @@ public class BlockGame extends ApplicationAdapter {
         }.start();
 
         if (online) {
-            connectToServer(host, port);
+            chatRenderer.chat.add("Mod loader doesn't officially support online mode!");
+            //connectToServer(host, port);
         }
     }
 
@@ -285,7 +287,8 @@ public class BlockGame extends ApplicationAdapter {
         if (debug_overlay) {
             world.renderDebug(font, sprite_batch, camera);
             font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight() - 5 * 30);
-            chatRenderer.render(sprite_batch, 6);
+            font.draw(sprite_batch, String.format("%d Mods loaded!", modLoader.mods.size()), 10, Gdx.graphics.getHeight() - 6 * 30);
+            chatRenderer.render(sprite_batch, 7);
 
         } else {
             font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());

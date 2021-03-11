@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ModLoader {
 
-    List<Mod> mods = new ArrayList<>();
+    public List<Mod> mods = new ArrayList<>();
 
     public ModLoader() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();

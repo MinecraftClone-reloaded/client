@@ -2,3 +2,4 @@ redstone-block.js
 badlogic-block.js
 discord-info.js
 event-example.js
+command-example.js

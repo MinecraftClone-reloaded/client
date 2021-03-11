@@ -10,6 +10,7 @@ public class SaveCommand implements Command {
     public void execute(CommandEvent event) {
         if(event.args.length != 1) {
             event.CommandFail();
+            return;
         }
 
         try {

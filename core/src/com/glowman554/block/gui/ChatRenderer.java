@@ -19,7 +19,7 @@ public class ChatRenderer {
                         chat.remove(0);
                     }
                     try {
-                        Thread.sleep(30000);
+                        Thread.sleep(3000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
