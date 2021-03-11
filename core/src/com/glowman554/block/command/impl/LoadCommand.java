@@ -9,7 +9,7 @@ import com.glowman554.block.world.World;
 public class LoadCommand implements Command {
     @Override
     public void execute(CommandEvent event) {
-        if(event.args.length != 1) {
+        if (event.args.length != 1) {
             event.CommandFail();
             return;
         }

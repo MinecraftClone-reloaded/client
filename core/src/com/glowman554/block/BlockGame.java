@@ -31,19 +31,10 @@ import com.glowman554.block.world.World;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class BlockGame extends ApplicationAdapter {
 
     public static BlockGame game;
-
-    public ModelBatch model_batch;
-    public SpriteBatch sprite_batch;
-    public PerspectiveCamera camera;
-    public BitmapFont font;
-    public World world;
-    public ChatRenderer chatRenderer;
-    public CommandManager commandManager;
     public final float field_of_view = 67;
     public final float camera_near = 1;
     public final float camera_far = 300;
@@ -53,6 +44,13 @@ public class BlockGame extends ApplicationAdapter {
     private final String username;
     private final String host;
     private final int port;
+    public ModelBatch model_batch;
+    public SpriteBatch sprite_batch;
+    public PerspectiveCamera camera;
+    public BitmapFont font;
+    public World world;
+    public ChatRenderer chatRenderer;
+    public CommandManager commandManager;
     public FPSController camera_controller;
     public Environment environment;
     public Texture corsair;
@@ -114,7 +112,7 @@ public class BlockGame extends ApplicationAdapter {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 
-                if(!ModEvent.callEvent("touchDown", new int[]{screenX, screenY, pointer, button})) {
+                if (!ModEvent.callEvent("touchDown", new int[]{screenX, screenY, pointer, button})) {
                     return super.touchDown(screenX, screenY, pointer, button);
                 }
 
@@ -128,18 +126,18 @@ public class BlockGame extends ApplicationAdapter {
 
             @Override
             public boolean keyDown(int keycode) {
-                if(!ModEvent.callEvent("keyDown", keycode)) {
+                if (!ModEvent.callEvent("keyDown", keycode)) {
                     return super.keyDown(keycode);
                 }
 
-                if(input) {
-                    if(keycode == Input.Keys.BACKSPACE) {
-                        if(chat.size() != 0) {
+                if (input) {
+                    if (keycode == Input.Keys.BACKSPACE) {
+                        if (chat.size() != 0) {
                             chat.remove(chat.size() - 1);
                         }
-                    } else if(keycode == Input.Keys.SPACE) {
+                    } else if (keycode == Input.Keys.SPACE) {
                         chat.add(" ");
-                    } else  if(keycode == Input.Keys.ENTER) {
+                    } else if (keycode == Input.Keys.ENTER) {
                         input = false;
                         commandManager.onCommand(new CommandEvent(toText(chat).toLowerCase(), toText(chat).toLowerCase().split(" ")[0], CommandEvent.getArguments(toText(chat).toLowerCase().split(" "))));
                     } else {
@@ -274,7 +272,7 @@ public class BlockGame extends ApplicationAdapter {
         model_batch.begin(camera);
         world.renderWorld(model_batch, environment, camera, online, serverConnection);
 
-        if(!ModEvent.callEvent("renderModelBatch", model_batch)) {
+        if (!ModEvent.callEvent("renderModelBatch", model_batch)) {
             model_batch.end();
             return;
         }
@@ -295,12 +293,12 @@ public class BlockGame extends ApplicationAdapter {
             chatRenderer.render(sprite_batch, 1);
         }
 
-        if(input) {
+        if (input) {
             font.draw(sprite_batch, "> " + toText(chat).toLowerCase(), 10, 30);
         }
         sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 
-        if(!ModEvent.callEvent("renderSpriteBatch", sprite_batch)) {
+        if (!ModEvent.callEvent("renderSpriteBatch", sprite_batch)) {
             sprite_batch.end();
             return;
         }

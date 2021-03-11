@@ -8,7 +8,7 @@ import com.glowman554.block.utils.FileUtils;
 public class SaveCommand implements Command {
     @Override
     public void execute(CommandEvent event) {
-        if(event.args.length != 1) {
+        if (event.args.length != 1) {
             event.CommandFail();
             return;
         }

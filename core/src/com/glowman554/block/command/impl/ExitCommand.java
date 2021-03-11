@@ -8,7 +8,7 @@ import com.glowman554.block.command.CommandEvent;
 public class ExitCommand implements Command {
     @Override
     public void execute(CommandEvent event) {
-        if(event.args.length != 0) {
+        if (event.args.length != 0) {
             event.CommandFail();
             return;
         }

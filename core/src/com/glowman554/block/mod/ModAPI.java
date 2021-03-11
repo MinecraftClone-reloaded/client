@@ -1,7 +1,6 @@
 package com.glowman554.block.mod;
 
 import com.glowman554.block.BlockGame;
-import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.WebHookAPI;
 import com.glowman554.block.world.Chunk;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;

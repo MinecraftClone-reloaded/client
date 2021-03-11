@@ -7,9 +7,15 @@ public class CommandEvent {
     public final String command;
     public final String[] args;
 
+    public CommandEvent(String message, String command, String[] args) {
+        this.message = message;
+        this.command = command;
+        this.args = args;
+    }
+
     public static String[] getArguments(String[] array) {
 
-        if(array.length < 2) {
+        if (array.length < 2) {
             return new String[0];
         }
 
@@ -26,13 +32,6 @@ public class CommandEvent {
 
     public void sendMessage(String what) {
         BlockGame.game.chatRenderer.chat.add(what);
-    }
-
-
-    public CommandEvent(String message, String command, String[] args) {
-        this.message = message;
-        this.command = command;
-        this.args = args;
     }
 
     public void CommandFail() {
