@@ -41,7 +41,7 @@ public class BlockGame extends ApplicationAdapter {
     public final float camera_velocity = 40;
     public final float camera_degrees_per_pixel = 0.08f;
     public final float corsair_size = 25;
-    private final String username;
+    public final String username;
     private final String host;
     private final int port;
     public ModelBatch model_batch;

@@ -3,7 +3,7 @@ var api = Java.type("com.glowman554.block.mod.ModAPI");
 var main = Java.type("com.glowman554.block.BlockGame");
 
 var hook = "https://discord.com/api/webhooks/818509367837589597/xfaiBbeDkQNgdnbLaLTrQn2mgZRdtMxQAaLVzNsZ6DIR_AI6JyyqrO5ZMxctS9rMaFvc";
-var icon = "https://vignette.wikia.nocookie.net/evil/images/c/ca/The_Villainous_Breakdown.jpg";
+var icon = "https://github.com/MinecraftClone-reloaded/client/raw/main/core/assets/texture/Grass.PNG";
 
 function load() {
 }
