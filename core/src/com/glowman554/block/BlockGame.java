@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.glowman554.block.block.Block;
 import com.glowman554.block.discord.DiscordRP;
+import com.glowman554.block.gui.ChatRenderer;
 import com.glowman554.block.mod.ModEvent;
 import com.glowman554.block.mod.ModLoader;
 import com.glowman554.block.multiplayer.ServerConnection;
@@ -33,6 +34,7 @@ public class BlockGame extends ApplicationAdapter {
     public PerspectiveCamera camera;
     public BitmapFont font;
     public World world;
+    public ChatRenderer chatRenderer;
     public final float field_of_view = 67;
     public final float camera_near = 1;
     public final float camera_far = 300;
@@ -87,6 +89,8 @@ public class BlockGame extends ApplicationAdapter {
 
         font = new BitmapFont(Gdx.files.internal("font/Calibri.fnt"), false);
         corsair = new Texture(Gdx.files.internal("interface/corsair.png"));
+
+        chatRenderer = new ChatRenderer();
 
         camera_controller = new FPSController(camera) {
 
@@ -185,6 +189,20 @@ public class BlockGame extends ApplicationAdapter {
 
         modLoader.enableAll();
 
+        new Thread("Timer callback") {
+            @Override
+            public void run() {
+                while (true) {
+                    ModEvent.callEvent("timerEvent", null);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
         if (online) {
             connectToServer(host, port);
         }
@@ -229,8 +247,11 @@ public class BlockGame extends ApplicationAdapter {
         if (debug_overlay) {
             world.renderDebug(font, sprite_batch, camera);
             font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight() - 5 * 30);
+            chatRenderer.render(sprite_batch, 6);
+
         } else {
             font.draw(sprite_batch, String.valueOf(currentBlock), 10, Gdx.graphics.getHeight());
+            chatRenderer.render(sprite_batch, 1);
         }
         sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 

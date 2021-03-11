@@ -157,6 +157,23 @@ public class World implements Disposable {
         }
     }
 
+    public void editBoxByRayCast(Camera camera, Vector3 start_point, Vector3 direction, boolean online, ServerConnection serverConnection) {
+        int chunkX = (int) (camera.position.x / Chunk.chunk_size / Chunk.field_size);
+        int chunkY = (int) (camera.position.z / Chunk.chunk_size / Chunk.field_size);
+
+        Vector3 new_point = new Vector3();
+
+        new_point.x = start_point.x - (Chunk.field_size * Chunk.chunk_size) * chunkX;
+        new_point.y = start_point.y;
+        new_point.z = start_point.z - (Chunk.field_size * Chunk.chunk_size) * chunkY;
+
+        try {
+            this.world[chunkX][chunkY].editBoxByRayCast(new_point, direction, (Block) null, online, serverConnection);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public boolean hittingBox(Camera camera, Vector3 point) {
         int chunkX = (int) (camera.position.x / Chunk.chunk_size / Chunk.field_size);
         int chunkY = (int) (camera.position.z / Chunk.chunk_size / Chunk.field_size);

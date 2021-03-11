@@ -58,7 +58,11 @@ function enable() {
         print("Touch down");
 
         if(enabled) {
-            main.game.world.editBoxByRayCast(main.game.camera, main.game.camera.position, main.game.camera.direction, api.newModBlock("badlogic.jpg"), false, null);
+            if(data[3] == 0) {
+                main.game.world.editBoxByRayCast(main.game.camera, main.game.camera.position, main.game.camera.direction, api.newModBlock("badlogic.jpg"), false, null);
+            } else if(data[3] == 1) {
+                main.game.world.editBoxByRayCast(main.game.camera, main.game.camera.position, main.game.camera.direction, false, null)
+            }
             event.continue_action = false;
         }
     });
@@ -66,6 +70,10 @@ function enable() {
     event.registerEvent("newChunk", function(data) {
         print("New chunk " + data[0] + " " + data[1]);
         api.modBlock("badlogic.jpg", 0, 1, 0, data[0], data[1]);
+    });
+
+    event.registerEvent("timerEvent", function(data) {
+        print("Timer UwU");
     });
 
     event.registerEvent("renderSpriteBatch", render_text);
