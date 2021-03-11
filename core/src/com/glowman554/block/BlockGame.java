@@ -26,12 +26,13 @@ import java.io.IOException;
 
 public class BlockGame extends ApplicationAdapter {
 
+    public static BlockGame game;
 
-    public static ModelBatch model_batch;
-    public static SpriteBatch sprite_batch;
-    public static PerspectiveCamera camera;
-    public static BitmapFont font;
-    public static World world;
+    public ModelBatch model_batch;
+    public SpriteBatch sprite_batch;
+    public PerspectiveCamera camera;
+    public BitmapFont font;
+    public World world;
     public final float field_of_view = 67;
     public final float camera_near = 1;
     public final float camera_far = 300;
@@ -58,6 +59,8 @@ public class BlockGame extends ApplicationAdapter {
         this.host = host;
         this.port = port;
         this.online = online;
+
+        game = this;
     }
 
     @Override
@@ -89,15 +92,8 @@ public class BlockGame extends ApplicationAdapter {
 
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                ModEvent.data[0] = screenX;
-                ModEvent.data[1] = screenY;
-                ModEvent.data[2] = pointer;
-                ModEvent.data[3] = button;
 
-                ModEvent.callEvent("touchDown");
-
-                if (!ModEvent.continue_action) {
-                    ModEvent.continue_action = true;
+                if(!ModEvent.callEvent("touchDown", new int[]{screenX, screenY, pointer, button})) {
                     return super.touchDown(screenX, screenY, pointer, button);
                 }
 
@@ -111,12 +107,7 @@ public class BlockGame extends ApplicationAdapter {
 
             @Override
             public boolean keyDown(int keycode) {
-
-                ModEvent.data[0] = keycode;
-                ModEvent.callEvent("keyDown");
-
-                if (!ModEvent.continue_action) {
-                    ModEvent.continue_action = true;
+                if(!ModEvent.callEvent("keyDown", keycode)) {
                     return super.keyDown(keycode);
                 }
 
@@ -225,10 +216,8 @@ public class BlockGame extends ApplicationAdapter {
         model_batch.begin(camera);
         world.renderWorld(model_batch, environment, camera, online, serverConnection);
 
-        ModEvent.callEvent("renderModelBatch");
-
-        if (!ModEvent.continue_action) {
-            ModEvent.continue_action = true;
+        if(!ModEvent.callEvent("renderModelBatch", model_batch)) {
+            model_batch.end();
             return;
         }
         model_batch.end();
@@ -245,12 +234,11 @@ public class BlockGame extends ApplicationAdapter {
         }
         sprite_batch.draw(corsair, corsair_x, corsair_y, corsair_size, corsair_size);
 
-        ModEvent.callEvent("renderSpriteBatch");
-
-        if (!ModEvent.continue_action) {
-            ModEvent.continue_action = true;
+        if(!ModEvent.callEvent("renderSpriteBatch", sprite_batch)) {
+            sprite_batch.end();
             return;
         }
+
         sprite_batch.end();
 
         //System.out.println(String.format("Camera: %d %d", (int) camera.position.x, (int)  camera.position.z));

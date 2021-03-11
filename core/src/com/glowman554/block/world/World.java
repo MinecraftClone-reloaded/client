@@ -61,9 +61,7 @@ public class World implements Disposable {
                             this.world[chunkX + i][chunkY + k].updatePosition();
                         } else {
                             this.world[chunkX + i][chunkY + k] = new Chunk(true, chunkX + i, chunkY + k);
-                            ModEvent.data[0] = chunkX + i;
-                            ModEvent.data[1] = chunkY + k;
-                            ModEvent.callEvent("newChunk");
+                            ModEvent.callEvent("newChunk", new int[]{chunkX + i, chunkY + k});
                         }
                     }
                     this.world[chunkX + i][chunkY + k].renderChunk(batch, environment);
@@ -80,9 +78,7 @@ public class World implements Disposable {
                             this.world[chunkX - i][chunkY - k].updatePosition();
                         } else {
                             this.world[chunkX - i][chunkY - k] = new Chunk(true, chunkX - i, chunkY - k);
-                            ModEvent.data[0] = chunkX - i;
-                            ModEvent.data[1] = chunkY - k;
-                            ModEvent.callEvent("newChunk");
+                            ModEvent.callEvent("newChunk", new int[]{chunkX - i, chunkY - k});
                         }
                     }
                     this.world[chunkX - i][chunkY - k].renderChunk(batch, environment);
@@ -99,9 +95,7 @@ public class World implements Disposable {
                             this.world[chunkX + i][chunkY - k].updatePosition();
                         } else {
                             this.world[chunkX + i][chunkY - k] = new Chunk(true, chunkX + i, chunkY - k);
-                            ModEvent.data[0] = chunkX + i;
-                            ModEvent.data[1] = chunkY - k;
-                            ModEvent.callEvent("newChunk");
+                            ModEvent.callEvent("newChunk", new int[]{chunkX + i, chunkY - k});
                         }
                     }
                     this.world[chunkX + i][chunkY - k].renderChunk(batch, environment);
@@ -118,9 +112,7 @@ public class World implements Disposable {
                             this.world[chunkX - i][chunkY + k].updatePosition();
                         } else {
                             this.world[chunkX - i][chunkY + k] = new Chunk(true, chunkX - i, chunkY + k);
-                            ModEvent.data[0] = chunkX - i;
-                            ModEvent.data[1] = chunkY + k;
-                            ModEvent.callEvent("newChunk");
+                            ModEvent.callEvent("newChunk", new int[]{chunkX - i, chunkY + k});
                         }
                     }
                     this.world[chunkX - i][chunkY + k].renderChunk(batch, environment);
